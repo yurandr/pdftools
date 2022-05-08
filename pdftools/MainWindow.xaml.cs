@@ -72,7 +72,7 @@ namespace pdftools
             if (Files.Count > 0)
             {
                 var firstFile = Files.First();
-                var outputFilePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(firstFile.FilePath) ?? System.IO.Directory.GetCurrentDirectory(), "merged.pdf");
+                var outputFilePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(firstFile.FilePath) ?? System.IO.Directory.GetCurrentDirectory(), System.IO.Path.GetFileNameWithoutExtension(firstFile.FilePath) + ".merged.pdf");
 
                 var saveFileDialog = new SaveFileDialog() { Filter = "*.pdf|*.pdf", FileName = outputFilePath };
                 if (saveFileDialog.ShowDialog() == true)
