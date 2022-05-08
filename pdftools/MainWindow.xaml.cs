@@ -32,6 +32,22 @@ namespace pdftools
             InitializeComponent();
             DataContext = this;
         }
+        public void AddFilesPdf(IEnumerable<string> filePaths)
+        {
+            foreach (var filePath in filePaths.Where(fn => fn.IsPdf()))
+            {
+                Files.Add(new FileData(filePath));
+            }
+
+        }
+        private void AddFiles_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog() { Filter = "*.pdf|*.pdf", Multiselect = true, CheckFileExists = true };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                AddFilesPdf(openFileDialog.FileNames);
+            }
+        }
         private void Merge(IEnumerable<string> filepaths, string outputFilePath)
         {
             using (var outputDocument = new PdfDocument())
@@ -47,25 +63,18 @@ namespace pdftools
                 outputDocument.Save(outputFilePath);
             }
         }
-        private void AddFiles_Click(object sender, RoutedEventArgs e)
+        private void MergeFiles_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog() { Filter="*.pdf|*.pdf", Multiselect=true, CheckFileExists=true };
-            if (openFileDialog.ShowDialog() == true)
-            {
-                foreach(var selectedPath in openFileDialog.FileNames)
-                {
-                    this.Files.Add(new FileData(selectedPath));
-                }
-            }
+            e.CanExecute = Files.Any();
         }
-        private void Merge_Click(object sender, RoutedEventArgs e)
+        private void MergeFiles_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             if (Files.Count > 0)
             {
                 var firstFile = Files.First();
                 var outputFilePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(firstFile.FilePath) ?? System.IO.Directory.GetCurrentDirectory(), "merged.pdf");
 
-                var saveFileDialog = new SaveFileDialog() { Filter = "*.pdf|*.pdf", FileName = outputFilePath};
+                var saveFileDialog = new SaveFileDialog() { Filter = "*.pdf|*.pdf", FileName = outputFilePath };
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     try
@@ -79,15 +88,18 @@ namespace pdftools
                 }
             }
         }
-        private void RemoveItem_Click(object sender, RoutedEventArgs e)
+        private void RemoveFiles_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            var toRemove = (sender as FrameworkElement)?.DataContext as FileData;
-            if (null != toRemove)
-                Files.Remove(toRemove);
+            e.CanExecute = null != lvFiles?.SelectedItem;
+        }
+        private void RemoveFiles_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var toRemove = lvFiles.SelectedItems.OfType<FileData>().ToList();
+            toRemove.ForEach(x => Files.Remove(x));
         }
         private void ListViewItemDoubleClick(object sender, RoutedEventArgs e)
         {
-            var fileData = (sender as ListViewItem)?.DataContext as FileData;
+            var fileData = (sender as FrameworkElement)?.DataContext as FileData;
             if (null != fileData)
             {
                 var p = new Process();
@@ -159,8 +171,9 @@ namespace pdftools
         }
         private void ListViewDragEnter(object sender, DragEventArgs e)
         {
-            string[]? dragged = e.Data.GetDataPresent(DataFormats.FileDrop) ? e.Data.GetData(DataFormats.FileDrop, true) as string[] : null;
-            if (dragged != null)
+            string[] dragged = (e.Data.GetDataPresent(DataFormats.FileDrop) ? e.Data.GetData(DataFormats.FileDrop, true) as string[] : null) ?? new string[0];
+            dragged = dragged.Where(fn => fn.IsPdf()).ToArray();
+            if (dragged.Any())
             {
                 draggedFiles.AddRange(dragged.Select(fn => new FileData(fn)));
                 e.Effects = DragDropEffects.Move | DragDropEffects.Copy;
@@ -178,5 +191,12 @@ namespace pdftools
             FilePath = filePath;
         }
         public string FileSize => $"{new System.IO.FileInfo(FilePath).Length.ToString("N", numberFormatInfo)}";
+    }
+    public static class Extension
+    { 
+        public static bool IsPdf(this string fileName)
+        {
+            return System.IO.Path.GetExtension(fileName).ToLower() == ".pdf";
+        }
     }
 }
