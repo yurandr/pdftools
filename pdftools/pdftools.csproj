@@ -5,6 +5,23 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>file-pdf.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="fonts\fontawesome-webfont.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="file-pdf.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PdfSharpCore" Version="1.3.18" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="fonts\fontawesome-webfont.ttf" />
+  </ItemGroup>
 
 </Project>
