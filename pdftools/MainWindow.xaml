@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:pdftools"
         xmlns:commands="clr-namespace:pdftools.commands"
         xmlns:converters ="clr-namespace:pdftools.converters"
-        Title="Какие-то инструменты для работы с PDF" Height="450" Width="800">
+        Title="Some instruments for PDF files" Height="450" Width="800">
     <Window.CommandBindings>
         <CommandBinding Command="commands:CustomCommands.AddFiles" Executed="AddFiles_Executed" />
         <CommandBinding Command="commands:CustomCommands.MergeFiles" CanExecute="MergeFiles_CanExecute" Executed="MergeFiles_Executed" />
@@ -25,19 +25,19 @@
             <DataTemplate x:Key="dtAddFiles">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xf067;" FontFamily="{StaticResource FontAwesome}" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                    <TextBlock Text="Добавить файлы..." VerticalAlignment="Center"/>
+                    <TextBlock Text="Add files..." VerticalAlignment="Center"/>
                 </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="dtMergeFiles">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xf066;" FontFamily="{StaticResource FontAwesome}" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                    <TextBlock Text="Объединить файлы..." VerticalAlignment="Center"/>
+                    <TextBlock Text="Merge files..." VerticalAlignment="Center"/>
                 </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="dtRemoveFiles">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xf00d;" FontFamily="{StaticResource FontAwesome}" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                    <TextBlock Text="Удалить файлы..." VerticalAlignment="Center"/>
+                    <TextBlock Text="Remove files..." VerticalAlignment="Center"/>
                 </StackPanel>
             </DataTemplate>
         </ResourceDictionary>
